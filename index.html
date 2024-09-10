@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Static Frontend</title>
+</head>
+<body>
+    <h1>Welcome to the Static Frontend</h1>
+    <p>This is a static website hosted on Amazon S3.</p>
+    
+    <!-- Login Form -->
+    <form id="login-form">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+        <br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+        <br>
+        <button type="submit">Login</button>
+    </form>
+
+    <p id="api-response"></p>
+
+    <script>
+        document.getElementById('login-form').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            // Get form data
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                // Send credentials to the backend API
+                const response = await fetch('http://ec2-13-127-216-3.ap-south-1.compute.amazonaws.com/api.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, password }),
+                });
+
+                // Check if authentication was successful
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('api-response').innerText = `API Response: ${JSON.stringify(data)}`;
+                } else {
+                    document.getElementById('api-response').innerText = 'Login failed. Please try again.';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('api-response').innerText = 'An error occurred. Please try again.';
+            }
+        });
+    </script>
+</body>
+</html>
+
